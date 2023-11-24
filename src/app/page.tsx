@@ -9,7 +9,7 @@ export default async function Home() {
   return (
     <main>
       <nav className="flex justify-between">
-        <h1 className='font-bold'>Recipes on Redis!</h1>
+        <h1 className='font-bold'>Burrito Recipes on Redis!</h1>
         <Link href="/create" className="btn">Add a new recipe</Link>
       </nav>
       
