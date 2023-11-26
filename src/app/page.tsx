@@ -1,11 +1,18 @@
+import { client } from "@/lib/db"
 import Link from 'next/link'
 
 const getRecipes = async () => {
-  
+  const result = await client.zRangeWithScores('recipes', 0, -1)
+
+  const recipes = await Promise.all(result.map(b => {
+    return client.hGetAll(`recipes:${b.score}`)
+  }))
+
+  return recipes
 }
 
 export default async function Home() {
-
+  const recipes = await getRecipes()
   return (
     <main>
       <nav className="flex justify-between">
@@ -13,7 +20,14 @@ export default async function Home() {
         <Link href="/create" className="btn">Add a new recipe</Link>
       </nav>
       
-      <p>List of recipes here.</p>
+      {recipes.map(recipe => (
+        <div key={recipe.title} className="card"> 
+          <h2>{recipe.title}</h2>
+          <p>Cooking time: {recipe.time}</p>
+          <p>Rating: {recipe.rating}</p>
+          <p>{recipe.description}</p>
+        </div>
+      ))}
     </main>
   )
 }
